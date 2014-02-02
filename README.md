@@ -36,5 +36,5 @@ Note: only %h and %u are supported
 
 # 3 - open Things
 
-see Issue-List: <a href="https://github.com/InuSasha/kolab-calander-caldav-driver/issues?labels=ToDos&page=1&state=open"> ToDos</a>
+see Issue-List: <a href="https://github.com/InuSasha/kolab-calander-caldav-driver/issues?labels=ToDos&page=1&state=open"> ToDos</a><br/>
 Help is always willcome
