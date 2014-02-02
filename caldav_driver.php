@@ -1078,7 +1078,7 @@ class caldav_driver extends calendar_driver
       'id'            => $id,
       'calendar'      => $calendar,
       'recurrence_id' => count($vcard->GetProperties("RECURRENCE-ID")) > 0 ? $id : NULL,
-      'sensitivity'   => "0",
+      'sensitivity'   => 'public',
       'readonly'      => true,
     );
 
@@ -1158,9 +1158,9 @@ class caldav_driver extends calendar_driver
         case "CLASS":
             switch ($property->Value())
             {
-              case "PUBLIC":       $event['sensitivity'] = "0"; break;
-              case "PRIVATE":      $event['sensitivity'] = "1"; break;
-              case "CONFIDENTIAL": $event['sensitivity'] = "2"; break;
+              case "PUBLIC":       $event['sensitivity'] = 'public'; break;
+              case "PRIVATE":      $event['sensitivity'] = 'private'; break;
+              case "CONFIDENTIAL": $event['sensitivity'] = 'confidential'; break;
             }
             break;
         
@@ -1175,6 +1175,49 @@ class caldav_driver extends calendar_driver
     }
 
     return $event;
+  }
+
+  /** TODO: needed?
+   * Save an attachment related to the given event
+   */
+  private function add_attachment($attachment, $event_id)
+  {
+    /*
+    $data = $attachment['data'] ? $attachment['data'] : file_get_contents($attachment['path']);
+    
+    $query = $this->rc->db->query(
+      "INSERT INTO " . $this->db_attachments .
+      " (event_id, filename, mimetype, size, data)" .
+      " VALUES (?, ?, ?, ?, ?)",
+      $event_id,
+      $attachment['name'],
+      $attachment['mimetype'],
+      strlen($data),
+      base64_encode($data)
+    );
+
+    return $this->rc->db->affected_rows($query);
+    */
+  }
+
+  /** TODO: needed?
+   * Remove a specific attachment from the given event
+   */
+  private function remove_attachment($attachment_id, $event_id)
+  {
+    /*
+    $query = $this->rc->db->query(
+      "DELETE FROM " . $this->db_attachments .
+      " WHERE attachment_id = ?" .
+        " AND event_id IN (SELECT event_id FROM " . $this->db_events .
+          " WHERE event_id = ?"  .
+            " AND calendar_id IN (" . $this->calendar_ids . "))",
+      $attachment_id,
+      $event_id
+    );
+
+    return $this->rc->db->affected_rows($query);
+    */
   }
 
   /**
