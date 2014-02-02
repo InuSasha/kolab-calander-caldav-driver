@@ -196,7 +196,7 @@ class caldav_driver extends calendar_driver
     );
     $rows += $this->rc->db->affected_rows($query);
 
-    return $rows;
+    return $rows != 0;
   }
 
   /** TODO: implement
@@ -702,49 +702,6 @@ class caldav_driver extends calendar_driver
       $event_id
     );
     
-    return $this->rc->db->affected_rows($query);
-    */
-  }
-
-  /** TODO: needed?
-   * Save an attachment related to the given event
-   */
-  private function add_attachment($attachment, $event_id)
-  {
-    /*
-    $data = $attachment['data'] ? $attachment['data'] : file_get_contents($attachment['path']);
-    
-    $query = $this->rc->db->query(
-      "INSERT INTO " . $this->db_attachments .
-      " (event_id, filename, mimetype, size, data)" .
-      " VALUES (?, ?, ?, ?, ?)",
-      $event_id,
-      $attachment['name'],
-      $attachment['mimetype'],
-      strlen($data),
-      base64_encode($data)
-    );
-
-    return $this->rc->db->affected_rows($query);
-    */
-  }
-
-  /** TODO: needed?
-   * Remove a specific attachment from the given event
-   */
-  private function remove_attachment($attachment_id, $event_id)
-  {
-    /*
-    $query = $this->rc->db->query(
-      "DELETE FROM " . $this->db_attachments .
-      " WHERE attachment_id = ?" .
-        " AND event_id IN (SELECT event_id FROM " . $this->db_events .
-          " WHERE event_id = ?"  .
-            " AND calendar_id IN (" . $this->calendar_ids . "))",
-      $attachment_id,
-      $event_id
-    );
-
     return $this->rc->db->affected_rows($query);
     */
   }
