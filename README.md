@@ -1,2 +1,2 @@
-kobal-calander-caldav-driver
+kolab-calander-caldav-driver
 ============================
