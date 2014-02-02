@@ -1,14 +1,17 @@
 <?php
 
 /**
- * Database driver for the Calendar plugin
+ * CalDAV driver for the Calendar plugin
  *
  * @version @package_version@
- * @author Lazlo Westerhof <hello@lazlo.me>
- * @author Thomas Bruederli <bruederli@kolabsys.com>
+ * @author Sascha Kuehndel <dev@inusasha.de>
+ * 
+ * based on the database driver from
+ * Lazlo Westerhof <hello@lazlo.me>, Thomas Bruederli <bruederli@kolabsys.com>
+ * and caldav driver from
+ * Jean-Louis Dupond <jean-louis@dupond.be>
  *
- * Copyright (C) 2010, Lazlo Westerhof <hello@lazlo.me>
- * Copyright (C) 2012-2014, Kolab Systems AG <contact@kolabsys.com>
+ * Copyright (C) 2014, Sascha Kuehndel
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
