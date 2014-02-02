@@ -29,6 +29,10 @@
 
 class caldav_driver extends calendar_driver
 {
+  // constants
+  const DEFAULT_COLOR = 'cc0000';
+  const SQL_TABLE     = 'caldav_calendars';
+
   // features this backend supports
   public $alarms = false;
   public $attendees = false;
@@ -65,11 +69,8 @@ class caldav_driver extends calendar_driver
     $this->caldav_url = $this->rc->config->get('calendar_caldav_url');
     $this->caldav_url = str_replace('%h', $_SERVER['HTTP_HOST'], $this->caldav_url);
     $this->caldav_url = str_replace('%u', $_SESSION['username'], $this->caldav_url);
-    //$this->caldav_url = str_replace('%n', ???, $this->caldav_url);
-    //$this->caldav_url = str_replace('%i', ???, $this->caldav_url);
 
     // Open CalDAV connection
-    rcube::write_log("dav", $this->caldav_url);
     $this->caldav = new CalDAVClient($this->caldav_url, $_SESSION['username'], $this->rc->decrypt($_SESSION['password']));
     $this->_read_calendars();
   }
@@ -95,7 +96,7 @@ class caldav_driver extends calendar_driver
             'id'         => $id,
             'name'       => $val->displayname,
             'listname'   => $val->displayname,
-            'color'      => 'cc0000',
+            'color'      => self::DEFAULT_COLOR,
             'showalarms' => 0,
             'active'     => true,
             // 'class_name' => '',
@@ -103,7 +104,28 @@ class caldav_driver extends calendar_driver
             //'default'    => false,
             'children'   => false,
           );
-          $calendar_ids[] = $this->rc->db->quote($id);
+
+          // get internal data
+          $result = $this->rc->db->query(
+            'SELECT color FROM '.self::SQL_TABLE.' WHERE server_id=? and calendar_id=?',
+            $this->caldav_url,
+            $id
+          );
+          if ($result)
+          {
+            $row = $this->rc->db->fetch_assoc($result);
+            if ($row)
+              $this->calendars[$id]['color'] = $row['color'];
+            else
+              $this->rc->db->query(
+                'INSERT INTO '.self::SQL_TABLE.' VALUES (?,?,?)',
+                $this->caldav_url,
+                $id,
+                self::DEFAULT_COLOR
+              );
+          }
+
+          $calendar_ids[] = $id;
         }
       }
 
@@ -201,7 +223,6 @@ class caldav_driver extends calendar_driver
    */
   public function edit_calendar($prop)
   {
-    /* TODO implement
     // birthday calendar properties are saved in user prefs
     if ($prop['id'] == self::BIRTHDAY_CALENDAR_ID) {
       $prefs['birthday_calendar'] = $this->rc->config->get('birthday_calendar', array('color' => '87CEFA'));
@@ -213,20 +234,15 @@ class caldav_driver extends calendar_driver
       return true;
     }
 
+    // change property of calendar
     $query = $this->rc->db->query(
-      "UPDATE " . $this->db_calendars . "
-       SET   name=?, color=?, showalarms=?
-       WHERE calendar_id=?
-       AND   user_id=?",
-      $prop['name'],
+      'UPDATE '.self::SQL_TABLE.' SET color=? WHERE server_id=? AND calendar_id=?',
       $prop['color'],
-      $prop['showalarms']?1:0,
-      $prop['id'],
-      $this->rc->user->ID
+      $this->caldav_url,
+      $prop['id']
     );
-    
+
     return $this->rc->db->affected_rows($query);
-    */
   }
 
   /**
@@ -933,15 +949,15 @@ class caldav_driver extends calendar_driver
     // iterate through calendars
     foreach ($calendars as $calendar)
     {
-      rcube::write_log("caldav","calendar:" . $calendar);
+      //rcube::write_log("caldav","calendar:" . $calendar);
       $path = $this->caldav_url . $calendar . "/";
       
       // get all calendar files and iterate over
       $files = $this->caldav->GetEvents($begin, $finish, $path);
       foreach ($files as $file)
       {
-        rcube::write_log("caldav","calendar:" . $calendar . "->" . $file['href']);
-        rcube::write_log("caldav",json_encode($file));
+        //rcube::write_log("caldav","calendar:" . $calendar . "->" . $file['href']);
+        //rcube::write_log("caldav",json_encode($file));
         $ical = new iCalComponent($file['data']);
         
         //Get The Timezone

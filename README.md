@@ -1,7 +1,7 @@
 kolab-calander-caldav-driver
 ============================
 
-# 1 - What is kolab-calander-caldav-driver
+# 1 - What is kolab-calander-caldav-driver:
 
 The roundcube webmail-client have calendar plugin implemented by the Kolab-Project.
 This calendar only have a database, google and spezial kolab-backend event storage.
@@ -34,7 +34,7 @@ $rcmail_config['calendar_caldav_url'] = 'http://%h/cal.php/calendars/%u';
 ```
 Note: only %h and %u are supported
 
-# 3 - open Things
+# 3 - open Things:
 
 see Issue-List: <a href="https://github.com/InuSasha/kolab-calander-caldav-driver/issues?labels=ToDos&page=1&state=open"> ToDos</a><br/>
 Help is always willcome
