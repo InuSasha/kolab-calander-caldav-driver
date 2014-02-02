@@ -177,14 +177,26 @@ class caldav_driver extends calendar_driver
     }
 
     // change property of calendar
+    $rows = 0;
+    if ($prop['name'] !== $this->calendars[$prop['id']]['name'])
+    {
+      $query = $this->rc->db->query(
+        'UPDATE '.self::SQL_TABLE.' SET displayname=? WHERE server_id=? AND calendar_id=?',
+        $prop['name'],
+        $this->caldav_url,
+        $prop['id']
+      );
+      $rows = $this->rc->db->affected_rows($query);
+    }
     $query = $this->rc->db->query(
       'UPDATE '.self::SQL_TABLE.' SET color=? WHERE server_id=? AND calendar_id=?',
       $prop['color'],
       $this->caldav_url,
       $prop['id']
     );
+    $rows += $this->rc->db->affected_rows($query);
 
-    return $this->rc->db->affected_rows($query);
+    return $rows;
   }
 
   /** TODO: implement
@@ -1059,14 +1071,14 @@ class caldav_driver extends calendar_driver
             'showalarms' => 0,
             'active'     => true,
             // 'class_name' => '',
-            'readonly'   => true,
-            //'default'    => false,
+            'readonly'   => false,
+            'default'    => $id === 'default',
             'children'   => false,
           );
 
           // get internal data
           $result = $this->rc->db->query(
-            'SELECT color FROM '.self::SQL_TABLE.' WHERE server_id=? and calendar_id=?',
+            'SELECT color, displayname FROM '.self::SQL_TABLE.' WHERE server_id=? and calendar_id=?',
             $this->caldav_url,
             $id
           );
@@ -1074,10 +1086,17 @@ class caldav_driver extends calendar_driver
           {
             $row = $this->rc->db->fetch_assoc($result);
             if ($row)
+            {
               $this->calendars[$id]['color'] = $row['color'];
+              if ($row['displayname'])
+              {
+                $this->calendars[$id]['name'] = $row['displayname'];
+                $this->calendars[$id]['listname'] = $row['displayname'];
+              }
+            }
             else
               $this->rc->db->query(
-                'INSERT INTO '.self::SQL_TABLE.' VALUES (?,?,?)',
+                'INSERT INTO '.self::SQL_TABLE.' VALUES (?,?,NULL,?)',
                 $this->caldav_url,
                 $id,
                 self::DEFAULT_COLOR
@@ -1103,6 +1122,7 @@ class caldav_driver extends calendar_driver
       'calendar'      => $calendar,
       'recurrence_id' => count($vcard->GetProperties("RECURRENCE-ID")) > 0 ? $id : NULL,
       'sensitivity'   => "0",
+      'readonly'      => true,
     );
 
     // iterate through the properties
