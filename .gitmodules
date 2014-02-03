@@ -1,0 +1,3 @@
+[submodule "lib/sabre-vobject"]
+	path = lib/sabre-vobject
+	url = https://github.com/fruux/sabre-vobject.git
