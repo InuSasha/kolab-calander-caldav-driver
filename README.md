@@ -10,9 +10,9 @@ In this project a additional backend is developed, with support for access an Ca
 # 2 - Installation:
 
 ### 1.1 - Source install
-under the driver directory of the calendar plugin run:
+In the driver path of the calendar, make a simple git clone of this repository, including all submodules.
 ```sh
-git clone https://github.com/InuSasha/kolab-calander-caldav-driver.git caldav
+git clone https://github.com/InuSasha/kolab-calander-caldav-driver.git caldav --recurse-submodules
 ```
 
 ### 1.2 - Configuration
