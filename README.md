@@ -3,7 +3,7 @@ kolab-calander-caldav-driver
 
 # 1 - What is kolab-calander-caldav-driver:
 
-The roundcube webmail-client have calendar plugin implemented by the Kolab-Project.
+The roundcube webmail-client have calendar plugin implemented by the <a href="http://git.kolab.org/roundcubemail-plugins-kolab/">Kolab-Project</a>.
 This calendar only have a database, google and spezial kolab-backend event storage.
 In this project a additional backend is developed, with support for access an CalDAV server like <a href="http://baikal-server.com">Baikal</a>
 
